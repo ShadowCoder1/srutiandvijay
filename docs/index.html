@@ -451,6 +451,9 @@ function glideToCenter(cardW, cardH){
 }
 
 function dismissCard(){
+  const music = document.getElementById('bgMusic');
+  music.pause();
+  music.currentTime = 0;
   const cardEl = document.getElementById('cardEl');
   const stage  = document.getElementById('stage');
   const envEl  = document.getElementById('envelope');
