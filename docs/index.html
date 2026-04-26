@@ -183,7 +183,7 @@
 </head>
 <body>
 
-<audio id="bgMusic" loop preload="auto">
+<audio id="bgMusic" loop preload="none">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
@@ -305,17 +305,21 @@ function startOpening(){
   // 1. Seal fades out
   document.getElementById('sealWrap').classList.add('gone');
 
-  // Play music
+  // Play music — triggered by user click so autoplay policy is satisfied
   const music = document.getElementById('bgMusic');
+  music.currentTime = 0;
   music.volume = 0;
-  music.play().catch(()=>{});
-  // Fade in gently
-  let vol = 0;
-  const fadeIn = setInterval(() => {
-    vol = Math.min(vol + 0.05, 0.6);
-    music.volume = vol;
-    if(vol >= 0.6) clearInterval(fadeIn);
-  }, 80);
+  const playPromise = music.play();
+  if(playPromise !== undefined){
+    playPromise.then(() => {
+      let vol = 0;
+      const fadeIn = setInterval(() => {
+        vol = Math.min(vol + 0.04, 0.6);
+        music.volume = vol;
+        if(vol >= 0.6) clearInterval(fadeIn);
+      }, 100);
+    }).catch(err => console.warn('Audio play failed:', err));
+  }
 
   // 2. Flap swings open (rotates upward)
   setTimeout(() => document.getElementById('flap').classList.add('open'), 300);
